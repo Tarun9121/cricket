@@ -13,6 +13,7 @@ function AllSeries() {
   const [loading, setLoading] = useState(true);
   const [seriesId, setSeriesId] = useState();
 
+
   const navigate = useNavigate();
 
   async function getSeries() {
@@ -47,7 +48,14 @@ function AllSeries() {
         <div className="flex flex-col gap-3 p-3">
           {/* <AdminMode /> */}
           <div>
-            <Button variant="primary" onClick={() => navigate("/admin-mode")}>
+            <Button variant="primary" onClick={() => {
+              const token = localStorage.getItem("token")
+              if(token === "admin") {
+                navigate("/admin-mode")
+              } else {
+                navigate("/login-form")
+              }
+            }}>
               Enter Admin Mode
             </Button>
           </div>
