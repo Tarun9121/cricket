@@ -14,7 +14,7 @@ export const getTeamsByMatchId = async (matchId) => {
 
 export const getAllMatchesBySeriesIdDESC = async (seriesId) => {
     try {
-        const allSeries = await axios.get(`${MATCHES_URL}/get-all-matches-by-series-id/${seriesId}`)
+        const allSeries = await axios.get(`http://localhost:8080/api/series/get-matches-by-series-id/${seriesId}`)
         return allSeries;
     } catch(error) {
         console.log(error);
@@ -24,7 +24,7 @@ export const getAllMatchesBySeriesIdDESC = async (seriesId) => {
 
 export const postMatchDetails = async (matchDetails) => {
     try {
-        const response = await axios.get(`${MATCHES_URL}/save-match`, matchDetails);
+        const response = await axios.post(`${MATCHES_URL}/save-match-by-team-id/${matchDetails.team1}/${matchDetails.team2}`, matchDetails);
         return response;
     } catch(error) {
         return error;

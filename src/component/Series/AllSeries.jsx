@@ -1,33 +1,24 @@
 import React, { useState, useEffect } from "react";
-import Accordion from "react-bootstrap/Accordion";
 import { getAllSeries } from "../../service/seriesService";
 import Series from "./Series";
-import dummySeriesList from "../../data/dummySeriesList";
-import AllMatches from "../Matches/AllMatches";
 import Loading from "../Loading";
-import { Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 function AllSeries() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [seriesId, setSeriesId] = useState();
-
 
   const navigate = useNavigate();
 
   async function getSeries() {
     try {
       const response = await getAllSeries();
-      setLoading(false);
-      console.log(response);
-      console.log(response.data);
-      console.log("AllSeries: success: " + response.data[0].name);
       setData(response.data);
     } catch (error) {
-      setLoading(false);
-      console.log("AllSeries: error: " + error);
       setData([]);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -35,55 +26,77 @@ function AllSeries() {
     getSeries();
   }, []);
 
+  const handleAdminNavigation = () => {
+    const token = localStorage.getItem("token");
+    token === "admin" ? navigate("/admin-mode") : navigate("/login-form");
+  };
+
+  const handleViewMatches = (seriesId) => {
+    navigate(`/matches-in-series/${seriesId}`);
+  };
+
   return (
-    <Accordion>
+    <div className="bg-white text-black min-h-screen p-8">
       {loading ? (
-        <div
-          className="flex justify-center items-center"
-          style={{ height: "100vh" }}
-        >
+        <div className="flex justify-center items-center" style={{ height: "100vh" }}>
           <Loading />
         </div>
       ) : (
-        <div className="flex flex-col gap-3 p-3">
-          {/* <AdminMode /> */}
-          <div>
-            <Button variant="primary" onClick={() => {
-              const token = localStorage.getItem("token")
-              if(token === "admin") {
-                navigate("/admin-mode")
-              } else {
-                navigate("/login-form")
-              }
-            }}>
+        <div className="flex flex-col gap-8">
+          <div className="flex justify-center mb-8">
+            <Button
+              variant="dark"
+              onClick={handleAdminNavigation}
+              className="px-8 py-4 rounded-lg shadow-md hover:bg-gray-700"
+            >
               Enter Admin Mode
             </Button>
           </div>
-          {data && data.length > 0
-            ? data.map((item) => (
-                <Accordion.Item eventKey={item.id.toString()} key={item.id}>
-                  <Accordion.Header className="w-full d-flex flex-col">
-                    <div style={{ width: "100%" }} className="flex flex-col">
-                      <Series
-                        id={item.id}
-                        name={item.name}
-                        type={item.format}
-                        start={item.startDate}
-                        end={item.endDate}
-                        winner={item.winner}
-                        handleClick={setSeriesId}
-                      />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            {data && data.length > 0 ? (
+              data.map((item) => (
+                <Card
+                  key={item.id}
+                  className="bg-white text-black border border-gray-200 rounded-xl shadow-md hover:shadow-xl"
+                >
+                  <Card.Body className="p-6 flex flex-col gap-4">
+                    <Series
+                      id={item.id}
+                      name={item.name}
+                      type={item.format}
+                      start={item.startDate}
+                      end={item.endDate}
+                      winner={item.winner || "To Be Determined"} 
+                    />
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        variant="outline-dark"
+                        onClick={() => handleViewMatches(item.id)}
+                        className="w-full py-3 rounded-lg hover:bg-gray-100"
+                      >
+                        View Matches
+                      </Button>
                     </div>
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <AllMatches seriesId={seriesId} />
-                  </Accordion.Body>
-                </Accordion.Item>
+                  </Card.Body>
+                  <Card.Footer className="bg-gray-50 text-center text-sm text-gray-700 rounded-b-xl">
+                    {item.startDate && item.endDate ? (
+                      <>
+                        Start: {new Date(item.startDate).toLocaleDateString()} | End: {new Date(item.endDate).toLocaleDateString()}
+                      </>
+                    ) : (
+                      "Dates not available"
+                    )}
+                  </Card.Footer>
+                </Card>
               ))
-            : "May be There is no Data, check once again"}
+            ) : (
+              <div className="text-center text-lg text-black">No series found. Please check again later.</div>
+            )}
+          </div>
         </div>
       )}
-    </Accordion>
+    </div>
   );
 }
 

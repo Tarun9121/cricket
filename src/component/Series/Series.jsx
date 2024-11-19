@@ -9,8 +9,8 @@ export default function Series({ id, name, type, start, end, winner, handleClick
             </div>
             <div className="flex justify-between gap-3">
                 <div>
-                    <p className="p-2">started: {start}</p>
-                    <p>ended: {end}</p>
+                    <p className="p-2">started: {new Date(start).toLocaleDateString()}</p>
+                    <p className="px-2">ended: {new Date(end).toLocaleDateString()}</p>
                 </div>
                 <div>
                     <p className="text-amber-500 font-bold p-2">Winner: {winner}</p>

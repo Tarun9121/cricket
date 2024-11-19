@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getPlayerStatistics } from "../../service/matchStatisticsService";
 import { Card, Table, Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 export default function PlayerCard() {
   const [playerStats, setPlayerStats] = useState({});
   const location = useLocation();
-  // const member = useRef(location.state.member);
   const [member, setMember] = useState(location.state.member);
 
   async function getPlayerOverallStatistics(playerId) {
@@ -14,11 +13,7 @@ export default function PlayerCard() {
       console.log("playerId: started " + playerId);
       const response = await getPlayerStatistics(playerId);
       console.log("response.data: " + response.data);
-      console.log(response)
       if (response.status === 200) {
-        console.log("success");
-        console.log(response);
-        console.log("responsedata: " + response.data);
         setPlayerStats(response.data);
       }
     } catch (error) {
@@ -33,54 +28,63 @@ export default function PlayerCard() {
   }, []);
 
   return (
-    <div className="p-3">
-        <div className="row">
-      <div className="col-sm-6">
-        <Card>
-          <Card.Body>
-            <Card.Title>{member.name} <span className="text-muted h6">{member.bornDate}</span></Card.Title>
-            <Card.Text>
-              <div className="flex gap-3">
-                <div className="h6">Batting Style</div>
-                <div className="text-muted h6">{member.battingStyle}</div>
+    <div className="p-4">
+      <div className="row">
+        <div className="col-md-6">
+          <Card className="shadow-sm">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <Card.Title className="text-primary">{member.name}</Card.Title>
+                <span className="text-muted h6">{member.bornDate}</span>
               </div>
-              <div  className="flex gap-3">
-                <div className="h6">Bowling Style</div>
-                <div className="text-muted h6">{member.bowlingStyle}</div>
+              <div className="mb-3">
+                <div className="d-flex justify-content-between">
+                  <span className="font-weight-bold">Batting Style:</span>
+                  <span className="text-muted">{member.battingStyle}</span>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <span className="font-weight-bold">Bowling Style:</span>
+                  <span className="text-muted">{member.bowlingStyle}</span>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <span className="font-weight-bold">Nationality:</span>
+                  <span className="text-muted">{member.nationality}</span>
+                </div>
               </div>
-              <div  className="flex gap-3">
-                <div className="h6">Nationality</div>
-                <div className="text-muted h6">{member.nationality}</div>
-              </div>
-            </Card.Text>
-          </Card.Body>
-        </Card>
+            </Card.Body>
+          </Card>
+        </div>
+
+        <div className="col-md-6">
+          {playerStats !== "No Data" ? (
+            <Card className="shadow-sm">
+              <Card.Body>
+                <Card.Title className="text-primary mb-3">Player Statistics</Card.Title>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Statistic</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(playerStats).map(([key, value]) => (
+                      <tr key={key}>
+                        <td>{key}</td>
+                        <td>{value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
+          ) : (
+            <div className="text-center text-danger">
+              <strong>Something went wrong fetching statistics.</strong>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="col-sm-6">
-        {
-          (playerStats != "No Data") ? 
-          <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th colSpan="2" style={{ textAlign: "center" }}>
-                statistics
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(playerStats).map(([key, value]) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-        :
-        "SomeThing went wrong fetching statistics"
-        }
-      </div>
-    </div>
     </div>
   );
 }

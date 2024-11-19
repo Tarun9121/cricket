@@ -12,7 +12,7 @@ export default function SeriesFormComponenet() {
   });
 
   return (
-    <div className="p-3">
+    <div className="">
         <SeriesForm 
             seriesDetails={seriesDetails}
             setSeriesDetails={setSeriesDetails}
