@@ -1,36 +1,40 @@
 import { useEffect, useState } from "react";
 import { getPlayerStatistics } from "../../service/matchStatisticsService";
-import { Card, Table, Button } from "react-bootstrap";
+import { Card, Container, Table } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 
 export default function PlayerCard() {
-  const [playerStats, setPlayerStats] = useState({});
+  const [playerStats, setPlayerStats] = useState(null);
   const location = useLocation();
   const [member, setMember] = useState(location.state.member);
 
   async function getPlayerOverallStatistics(playerId) {
     try {
-      console.log("playerId: started " + playerId);
       const response = await getPlayerStatistics(playerId);
-      console.log("response.data: " + response.data);
       if (response.status === 200) {
         setPlayerStats(response.data);
       }
     } catch (error) {
-      console.log("error");
+      console.log("Error fetching player statistics:", error);
       setPlayerStats("No Data");
     }
   }
 
   useEffect(() => {
-    getPlayerOverallStatistics(member.id);
-    console.log("member.id: " + member.id);
-  }, []);
+    if (member?.id) {
+      getPlayerOverallStatistics(member.id);
+    }
+  }, [member]);
+
+  if (playerStats === null) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="p-4">
-      <div className="row">
-        <div className="col-md-6">
+      <Container>
+      <div className="row p-2">
+        <div className="col-md-2"></div>
+        <div className="col-md-8">
           <Card className="shadow-sm">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -54,12 +58,22 @@ export default function PlayerCard() {
             </Card.Body>
           </Card>
         </div>
+        <div className="col-md-2"></div>
+        </div>
 
-        <div className="col-md-6">
-          {playerStats !== "No Data" ? (
+        <div className="row p-2">
+        <div className="col-md-2"></div>
+        <div className="col-md-8">
+          {playerStats === "No Data" ? (
+            <div className="text-center text-danger">
+              <strong>Something went wrong fetching statistics.</strong>
+            </div>
+          ) : (
             <Card className="shadow-sm">
               <Card.Body>
-                <Card.Title className="text-primary mb-3">Player Statistics</Card.Title>
+                <Card.Title className="text-primary mb-3">
+                  Player Statistics
+                </Card.Title>
                 <Table striped bordered hover responsive>
                   <thead>
                     <tr>
@@ -68,23 +82,82 @@ export default function PlayerCard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(playerStats).map(([key, value]) => (
-                      <tr key={key}>
-                        <td>{key}</td>
-                        <td>{value}</td>
-                      </tr>
-                    ))}
+                    <tr>
+                      <td>No Of Innings</td>
+                      <td>{playerStats?.numberOfInnings || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>Total Runs</td>
+                      <td>{playerStats?.runsScored || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>Balls Bowled</td>
+                      <td>{playerStats?.ballsBowled || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>Runs Conceded</td>
+                      <td>{playerStats?.runsConcede || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>Strike Rate</td>
+                      <td>
+                        {playerStats?.strikeRate
+                          ? new Number(playerStats.strikeRate).toFixed(1)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Batting Average</td>
+                      <td>
+                        {playerStats?.battingAverage
+                          ? new Number(playerStats.battingAverage).toFixed(1)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Bowling Average</td>
+                      <td>
+                        {playerStats?.bowlingAverage
+                          ? new Number(playerStats.bowlingAverage).toFixed(1)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Wickets Taken</td>
+                      <td>{playerStats?.wicketsTaken || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>Economy</td>
+                      <td>
+                        {playerStats?.economy && !isNaN(playerStats.economy)
+                          ? new Number(playerStats.economy).toFixed(1)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>No of Hundreds</td>
+                      <td>{playerStats?.hundreds || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>No of Fifties</td>
+                      <td>{playerStats?.fifties || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>No of Sixes</td>
+                      <td>{playerStats?.sixes || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td>No of Fours</td>
+                      <td>{playerStats?.fours || "N/A"}</td>
+                    </tr>
                   </tbody>
                 </Table>
               </Card.Body>
             </Card>
-          ) : (
-            <div className="text-center text-danger">
-              <strong>Something went wrong fetching statistics.</strong>
-            </div>
           )}
         </div>
+        <div className="col-md-2"></div>
       </div>
-    </div>
+      </Container>
   );
 }

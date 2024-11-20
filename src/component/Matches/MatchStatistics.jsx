@@ -4,29 +4,43 @@ import Table from "react-bootstrap/Table";
 import { useParams } from "react-router-dom";
 import { getMatchStatistics } from "../../service/matchStatisticsService";
 import Loading from "../Loading";
+import { getTeamScoreByMatchId } from "../../service/matchService";
 
 export default function MatchStatistics() {
   const { matchId } = useParams();
   const [matchStats, setMatchStats] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const [totalScore, setTotalScore] = useState([]);
+
+  async function getTeamsTotalScores() {
+    try {
+      const response = await getTeamScoreByMatchId(matchId);
+      if(response.status == 200) {
+        setTotalScore(response.data);
+      }
+    } catch(error) {
+      setTotalScore([])
+    }
+  }
+
   async function fetchMatchStatistics() {
     try {
       const response = await getMatchStatistics(matchId);
-      console.log(response)
-      console.log(matchId)
       if (response.status === 200) {
         setMatchStats(response.data);
       }
     } catch (error) {
-      console.error("Error fetching match statistics:", error);
+      setMatchStats([])
     } finally {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     fetchMatchStatistics();
+    getTeamsTotalScores();
   }, [matchId]);
+
   return (
     <div className="p-4">
       {loading ? (
@@ -36,6 +50,14 @@ export default function MatchStatistics() {
       ) : (
         <>
           <h2 className="text-center mb-4">Match Statistics</h2>
+
+          {
+            totalScore?.length == 2 &&
+            (totalScore[0].totalScore > totalScore[1].totalScore ? 
+            <div className="p-3 text-end"><span className="font-bold capitalize">{totalScore[0].teamName}</span> won by {totalScore[0].totalScore - totalScore[1].totalScore} Runs</div>
+            :
+            <div className="p-3 text-end"><span className="font-bold capitalize">{totalScore[1].teamName}</span> won by {totalScore[1].totalScore - totalScore[0].totalScore} Runs</div>)
+          }
 
           <Card className="mb-4 shadow-sm">
             <Card.Header className="bg-primary text-white">

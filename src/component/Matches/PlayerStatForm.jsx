@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./PlayerStateForm.module.css"; // Custom CSS file for additional styling
 import { saveMatchStatistics } from "../../service/matchStatisticsService";
 
@@ -125,7 +125,6 @@ export default function PlayerStatForm() {
     return newErrors;
   };
   
-
   async function handleSubmitData(formData) {
     try {
       const response = await saveMatchStatistics(formData);
@@ -198,6 +197,54 @@ export default function PlayerStatForm() {
             </div>
 
             <div className="col-md-6">
+              <label className="form-label">Fours</label>
+              <input
+                type="number"
+                name="fours"
+                className={`form-control ${errors.fours ? "is-invalid" : ""}`}
+                value={formData.fours}
+                onChange={handleChange}
+              />
+              {errors.fours && <div className="invalid-feedback">{errors.fours}</div>}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label">Sixes</label>
+              <input
+                type="number"
+                name="sixes"
+                className={`form-control ${errors.sixes ? "is-invalid" : ""}`}
+                value={formData.sixes}
+                onChange={handleChange}
+              />
+              {errors.sixes && <div className="invalid-feedback">{errors.sixes}</div>}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label">Fifties</label>
+              <input
+                type="number"
+                name="fifties"
+                className={`form-control ${errors.fifties ? "is-invalid" : ""}`}
+                value={formData.fifties}
+                onChange={handleChange}
+              />
+              {errors.fifties && <div className="invalid-feedback">{errors.fifties}</div>}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label">Hundreds</label>
+              <input
+                type="number"
+                name="hundreds"
+                className={`form-control ${errors.hundreds ? "is-invalid" : ""}`}
+                value={formData.hundreds}
+                onChange={handleChange}
+              />
+              {errors.hundreds && <div className="invalid-feedback">{errors.hundreds}</div>}
+            </div>
+
+            <div className="col-md-6">
               <label className="form-label">Balls Bowled</label>
               <input
                 type="number"
@@ -232,57 +279,9 @@ export default function PlayerStatForm() {
               />
               {errors.wicketsTaken && <div className="invalid-feedback">{errors.wicketsTaken}</div>}
             </div>
-
-            <div className="col-md-6">
-              <label className="form-label">Hundreds</label>
-              <input
-                type="number"
-                name="hundreds"
-                className={`form-control ${errors.hundreds ? "is-invalid" : ""}`}
-                value={formData.hundreds}
-                onChange={handleChange}
-              />
-              {errors.hundreds && <div className="invalid-feedback">{errors.hundreds}</div>}
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label">Fifties</label>
-              <input
-                type="number"
-                name="fifties"
-                className={`form-control ${errors.fifties ? "is-invalid" : ""}`}
-                value={formData.fifties}
-                onChange={handleChange}
-              />
-              {errors.fifties && <div className="invalid-feedback">{errors.fifties}</div>}
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label">Sixes</label>
-              <input
-                type="number"
-                name="sixes"
-                className={`form-control ${errors.sixes ? "is-invalid" : ""}`}
-                value={formData.sixes}
-                onChange={handleChange}
-              />
-              {errors.sixes && <div className="invalid-feedback">{errors.sixes}</div>}
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label">Fours</label>
-              <input
-                type="number"
-                name="fours"
-                className={`form-control ${errors.fours ? "is-invalid" : ""}`}
-                value={formData.fours}
-                onChange={handleChange}
-              />
-              {errors.fours && <div className="invalid-feedback">{errors.fours}</div>}
-            </div>
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mt-4">
+          <button type="submit" className="btn btn-primary w-100 mt-4" >
             Submit Player Stats
           </button>
         </form>

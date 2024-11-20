@@ -14,11 +14,13 @@ function AllSeries() {
   async function getSeries() {
     try {
       const response = await getAllSeries();
-      setData(response.data);
+      if(response.status == 200) {
+        setLoading(false);
+        setData(response.data);
+      }
     } catch (error) {
-      setData([]);
-    } finally {
       setLoading(false);
+      setData([]);
     }
   }
 
@@ -73,7 +75,7 @@ function AllSeries() {
                       <Button
                         variant="outline-dark"
                         onClick={() => handleViewMatches(item.id)}
-                        className="w-full py-3 rounded-lg hover:bg-gray-100"
+                        className="w-full py-3 rounded-lg hover:bg-gray-100 hover:text-black"
                       >
                         View Matches
                       </Button>

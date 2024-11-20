@@ -22,6 +22,15 @@ export const getAllMatchesBySeriesIdDESC = async (seriesId) => {
     }
 }
 
+export const getTeamScoreByMatchId = async (matchId) => {
+    try {
+        const response = await axios.get(`${MATCHES_URL}/get-team-score-by-match-id/${matchId}`)
+        return response;
+    } catch(error) {
+        throw error;
+    }
+}
+
 export const postMatchDetails = async (matchDetails) => {
     try {
         const response = await axios.post(`${MATCHES_URL}/save-match-by-team-id/${matchDetails.team1}/${matchDetails.team2}`, matchDetails);

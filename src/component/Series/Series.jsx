@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function Series({ id, name, type, start, end, winner, handleClick }) {
+export default function Series({ id, name, type, start, end, winner }) {
     return (
-        <div className="border-2 border-gray-600 rounded-md p-3 w-full" onClick={() =>handleClick(id)}>
+        <div className="border-2 border-gray-600 rounded-md p-3 w-full">
             <div className="flex justify-between bg-green-400 p-2">
                 <h1 className="text-xl font-bold">{name}</h1>
                 <h3 className="text-gray-600">{type}</h3>
