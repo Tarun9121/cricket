@@ -30,7 +30,8 @@ export default function MatchesOfASeries() {
 
   useEffect(() => {
     if (allMatches.length > 0) {
-      const grouped = allMatches.reduce((acc, match) => {
+      const sortedMatches = [...allMatches].sort((m1, m2) => new Date(m1.startDate) - new Date(m2.startDate));
+      const grouped = sortedMatches.reduce((acc, match) => {
         const date = match.startDate;
         if (!acc[date]) {
           acc[date] = [];
@@ -38,6 +39,7 @@ export default function MatchesOfASeries() {
         acc[date].push(match);
         return acc;
       }, {});
+
       setGroupedMatches(grouped);
     }
   }, [allMatches]);
@@ -66,7 +68,9 @@ export default function MatchesOfASeries() {
                 className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-lg cursor-pointer transition-all duration-300"
                 onClick={() =>
                   navigation("/admin-mode/match-statform", {
-                    state: { matchDetails: match },
+                    state: { matchDetails: match,
+                      seriesDetails: seriesDetails
+                     },
                   })
                 }
               >

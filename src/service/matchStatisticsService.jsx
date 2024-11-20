@@ -25,3 +25,17 @@ export async function saveMatchStatistics(matchStatistics) {
     throw error;
   }
 }
+
+export async function getEveryPlayerStatistics(matchId) {
+  const response = await axios.get(`${STATISTICS_API}/statistics/get-team-score-by-match-id/${matchId}`)
+  return response;
+}
+
+export async function getTeamsTotalScoresByMatchId(matchId) {
+  try {
+    const response = await axios.get(`${STATISTICS_API}/statistics/get-total-team-score-match-id/${matchId}`)
+    return response;
+  } catch(error) {
+    throw error;
+  }
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import { useParams } from "react-router-dom";
-import { getMatchStatistics } from "../../service/matchStatisticsService";
+import { getMatchStatistics, getTeamsTotalScoresByMatchId } from "../../service/matchStatisticsService";
 import Loading from "../Loading";
 import { getTeamScoreByMatchId } from "../../service/matchService";
 
@@ -14,7 +14,7 @@ export default function MatchStatistics() {
 
   async function getTeamsTotalScores() {
     try {
-      const response = await getTeamScoreByMatchId(matchId);
+      const response = await getTeamsTotalScoresByMatchId(matchId);
       if(response.status == 200) {
         setTotalScore(response.data);
       }
